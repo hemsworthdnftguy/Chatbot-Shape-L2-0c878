@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "@hono/node-server": "^1.19.0",
+    "concurrently": "^9.2.0",
+    "hono": "^4.9.4",
+    "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.20.4"
+  }
+}
