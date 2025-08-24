@@ -12,4 +12,6 @@ export interface ResultCardData {
   title: string
   description?: string
   href?: string
+  imageUrl?: string
+  tokenId?: string
 }

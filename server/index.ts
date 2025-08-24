@@ -125,25 +125,30 @@ app.get('/api/shape/blocks', async (c) => {
 })
 
 // NFT endpoints remain TODO with stable stubs
+import { NFTListSchema, nftsByOwner as ownerAdapter, nftsByCollection as collectionAdapter, searchCollections as collectionsAdapter } from './adapters/nfts'
+
 const NftsCollectionsQuery = z.object({ query: z.string().trim().min(1), limit: z.coerce.number().min(1).max(50).default(10) })
 app.get('/api/shape/nfts/collections', async (c) => {
 	const parsed = NftsCollectionsQuery.safeParse({ query: c.req.query('query') || '', limit: c.req.query('limit') })
 	if (!parsed.success) return c.json({ items: [], message: 'Missing query' }, 400)
-	return c.json({ items: [], todo: true, message: 'See README Open Questions' })
+	const data = await collectionsAdapter(parsed.data.query, parsed.data.limit)
+	return c.json(NFTListSchema.parse(data))
 })
 
 const NftsByOwnerQuery = z.object({ address: z.string().regex(/^0x[a-fA-F0-9]{40}$/), limit: z.coerce.number().min(1).max(50).default(10) })
 app.get('/api/shape/nfts/by-owner', async (c) => {
 	const parsed = NftsByOwnerQuery.safeParse({ address: c.req.query('address') || '', limit: c.req.query('limit') })
 	if (!parsed.success) return c.json({ items: [], message: 'Invalid address' }, 400)
-	return c.json({ address: parsed.data.address, items: [], todo: true, message: 'See README Open Questions' })
+	const data = await ownerAdapter(parsed.data.address, parsed.data.limit)
+	return c.json(NFTListSchema.parse(data))
 })
 
 const NftsByCollectionQuery = z.object({ slug: z.string().trim().min(1), limit: z.coerce.number().min(1).max(50).default(10) })
 app.get('/api/shape/nfts/by-collection', async (c) => {
 	const parsed = NftsByCollectionQuery.safeParse({ slug: c.req.query('slug') || '', limit: c.req.query('limit') })
 	if (!parsed.success) return c.json({ items: [], message: 'Missing slug' }, 400)
-	return c.json({ slug: parsed.data.slug, items: [], todo: true, message: 'See README Open Questions' })
+	const data = await collectionAdapter(parsed.data.slug, parsed.data.limit)
+	return c.json(NFTListSchema.parse(data))
 })
 
 export default app

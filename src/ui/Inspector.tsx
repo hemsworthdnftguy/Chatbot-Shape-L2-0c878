@@ -9,12 +9,13 @@ export default function Inspector() {
     )
   }
 
+  // Very simple rendering: if description hints TODO, show it; else show as cards
   return (
     <div className="p-3 space-y-2">
       {results.map((r) => (
         <div key={r.id} className="rounded-md border p-3">
-          <div className="font-medium text-sm">{r.title}</div>
-          {r.description && <div className="text-xs text-muted-foreground">{r.description}</div>}
+          <div className="font-medium text-sm mb-1">{r.title}</div>
+          {r.description && <div className="text-xs text-muted-foreground mb-2 whitespace-pre-wrap">{r.description}</div>}
           {r.href && (
             <a className="text-xs text-primary underline" href={r.href} target="_blank" rel="noreferrer">Open</a>
           )}
