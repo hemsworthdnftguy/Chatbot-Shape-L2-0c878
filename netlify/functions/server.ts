@@ -1,7 +1,7 @@
 import type { Handler } from '@netlify/functions'
 import app from '../../server/index'
 
-export const handler: Handler = async (event, context) => {
+export const handler: Handler = async (event) => {
   const req = new Request(event.rawUrl, {
     method: event.httpMethod,
     headers: event.headers as any,
