@@ -10,6 +10,11 @@
     "paths": {
       "@/components/*": ["src/lib/components/*"],
       "@/lib/*": ["src/lib/*"],
+      "@/ui/*": ["src/ui/*"],
+      "@/pages/*": ["src/pages/*"],
+      "@/app": ["src/app.tsx"],
+      "@/types": ["src/types/index.ts"],
+      "@/types/*": ["src/types/*"],
       "@/state/*": ["src/state/*"],
       "@/api/*": ["src/api/*"]
     },
