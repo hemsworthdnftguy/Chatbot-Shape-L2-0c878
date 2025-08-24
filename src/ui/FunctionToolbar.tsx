@@ -9,9 +9,13 @@ export default function FunctionToolbar() {
   const [error, setError] = useState<string | null>(null)
   const firstFieldRef = useRef<HTMLInputElement | null>(null)
 
-  const open = (id: string) => {
+  const open = async (id: string) => {
     const t = getToolById(id)
     if (!t) return
+    if (!t.fields || t.fields.length === 0) {
+      await t.run({})
+      return
+    }
     const initial: Record<string, any> = {}
     t.fields?.forEach((f) => { initial[f.name] = '' })
     setValues(initial)

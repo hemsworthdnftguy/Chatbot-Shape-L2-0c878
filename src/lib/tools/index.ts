@@ -3,8 +3,10 @@ import getBalance from '@/lib/tools/getBalance'
 import getTransaction from '@/lib/tools/getTransaction'
 import listRecentBlocks from '@/lib/tools/listRecentBlocks'
 import searchNFTs from '@/lib/tools/searchNFTs'
+import getShapeInfo from '@/lib/tools/getShapeInfo'
 
 export const tools: ToolRegistry = [
+	getShapeInfo,
 	getBalance,
 	getTransaction,
 	listRecentBlocks,
