@@ -27,7 +27,7 @@ export default function StatusBar() {
         const res = await shape.getHealth()
         if (!cancelled) setServerHealth(res.ok ? 'ok' : 'degraded')
       } catch {
-        if (!cancelled) setServerHealth('down')
+        if (!cancelled) setServerHealth('unknown')
       }
       try {
         const h = await shape.getBlockHeight()
