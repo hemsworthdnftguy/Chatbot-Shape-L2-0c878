@@ -21,3 +21,15 @@ Production-ready chat UI for Shape L2 with secure server API proxy.
 - Implement getBalance, getTransaction, listRecentBlocks, searchNFTs using Shape/OpenSea/Transient/Manifold depending on availability on Shape L2.
 - Add richer status bar (network, version), and streaming responses if server supports.
 
+## Deploy
+
+Click this to deploy:
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=<REPO_URL>)
+
+After deploy, set Environment Variables:
+- `SHAPE_RPC_URL` = `https://mainnet.shape.network`
+- `OPENSEA_API_KEY` = (optional; adds richer NFT data)
+
+The `netlify.toml` config handles build output and routes `/api/*` to a serverless function wrapper for the Hono server.
+
