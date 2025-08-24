@@ -25,7 +25,7 @@ Production-ready chat UI for Shape L2 with secure server API proxy.
 
 Click this to deploy:
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=<REPO_URL>)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https%3A%2F%2Fgithub.com%2Fhemsworthdnftguy%2Fchatbot-Shape-L2)
 
 After deploy, set Environment Variables:
 - `SHAPE_RPC_URL` = `https://mainnet.shape.network`
