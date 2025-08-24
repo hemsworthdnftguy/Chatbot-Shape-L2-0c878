@@ -1,5 +1,15 @@
 import { useChatStore } from '../../state/chatStore'
 
+const TX_HASH = /0x[a-fA-F0-9]{64}/g
+const ADDRESS = /0x[a-fA-F0-9]{40}/g
+const explorer = 'https://shapescan.xyz'
+
+function linkify(text: string) {
+	return text
+		.replace(TX_HASH, (m) => `[${m}](${explorer}/tx/${m})`)
+		.replace(ADDRESS, (m) => `[${m}](${explorer}/address/${m})`)
+}
+
 export function MessageList() {
   const messages = useChatStore(s => s.messages)
   return (
@@ -12,7 +22,7 @@ export function MessageList() {
         messages.map((m, i) => (
           <div key={i} className="rounded border p-3">
             <div className="text-xs text-muted-foreground mb-1">{m.role}</div>
-            <div className="whitespace-pre-wrap break-words">{m.content}</div>
+            <div className="whitespace-pre-wrap break-words prose dark:prose-invert prose-sm" dangerouslySetInnerHTML={{ __html: linkify(m.content) }} />
           </div>
         ))
       )}
