@@ -1,35 +1,43 @@
-# Shape L2 Chatbot (Vite + React + TS)
+# Vite + React + TypeScript with Tailwind and shadcn/ui
 
-Production-ready chat UI for Shape L2 with secure server API proxy.
+## Getting Started
 
-## Quickstart
+1. Install dependencies:
 
-- Install deps: `npm i`
-- Dev: `npm run dev` (starts server on 8787 and Vite on 5173)
-- Test: `npm test`
-- Build: `npm run build`
+```bash
+pnpm install
+```
 
-## Deployment
+2. Copy env example and adjust as needed:
 
-- Netlify: one-click using this repo. Netlify deploys `dist` and serves `/api/*` via a function.
-- Env vars: put any API keys in provider-specific dashboard. No secrets in browser.
+```bash
+cp .env.example .env
+```
 
-## Open Questions / TODO
+3. Run the dev server:
 
-- DESIRED_FUNCTIONS list is not provided. Using minimal intents (info, blocks, balance, NFTs).
-- Replace `/api/blocks/head` with real Shape L2 endpoint per docs.
-- Implement getBalance, getTransaction, listRecentBlocks, searchNFTs using Shape/OpenSea/Transient/Manifold depending on availability on Shape L2.
-- Add richer status bar (network, version), and streaming responses if server supports.
+```bash
+pnpm dev
+```
 
-## Deploy
+4. Build for production:
 
-Click this to deploy:
+```bash
+pnpm build
+```
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https%3A%2F%2Fgithub.com%2Fhemsworthdnftguy%2Fchatbot-Shape-L2)
+5. Preview the production build:
 
-After deploy, set Environment Variables:
-- `SHAPE_RPC_URL` = `https://mainnet.shape.network`
-- `OPENSEA_API_KEY` = (optional; adds richer NFT data)
+```bash
+pnpm preview
+```
 
-The `netlify.toml` config handles build output and routes `/api/*` to a serverless function wrapper for the Hono server.
+6. Run tests:
+
+```bash
+pnpm test
+```
+
+- Tailwind CSS and a minimal theme are configured in `tailwind.config.ts` and `src/styles/globals.css`.
+- A shadcn-style `Button` is available at `src/lib/components/ui/button.tsx` and rendered on the homepage.
 

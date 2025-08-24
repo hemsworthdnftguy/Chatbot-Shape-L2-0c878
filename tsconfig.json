@@ -6,9 +6,10 @@
     "jsx": "react-jsx",
     "moduleResolution": "Bundler",
     "strict": true,
-    "baseUrl": .,
+    "baseUrl": ".",
     "paths": {
       "@/components/*": ["src/lib/components/*"],
+      "@/lib/*": ["src/lib/*"],
       "@/state/*": ["src/state/*"],
       "@/api/*": ["src/api/*"]
     },
