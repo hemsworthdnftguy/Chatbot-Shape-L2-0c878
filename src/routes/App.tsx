@@ -7,6 +7,7 @@ import { StatusBar } from '../lib/components/StatusBar'
 import { Toaster } from 'sonner'
 import { FunctionToolbar } from '../lib/components/FunctionToolbar'
 import { useChatStore } from '../state/chatStore'
+import { Button } from '@/components/ui/button'
 
 export default function App() {
   const [inspectorData, setInspectorData] = useState<any>(null)
@@ -21,7 +22,10 @@ export default function App() {
               <img alt="Otom AI" src="/logo.svg" className="w-6 h-6 rounded" />
               <h1 className="text-lg font-semibold">Otom AI</h1>
             </div>
-            <ThemeToggle />
+            <div className="flex items-center gap-2">
+              <Button>shadcn Button</Button>
+              <ThemeToggle />
+            </div>
           </div>
           <div className="p-3 border-b">
             <FunctionToolbar onInspector={setInspectorData} onAssistant={(t) => useChatStore.getState().addMessage({ role: 'assistant', content: t })} />
