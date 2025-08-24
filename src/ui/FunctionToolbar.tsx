@@ -1,0 +1,66 @@
+import { useState } from 'react'
+import { toolMeta, getToolById } from '@/lib/tools'
+import { Button } from '@/components/ui/button'
+import { z } from 'zod'
+
+export default function FunctionToolbar() {
+  const [pending, setPending] = useState<{ id: string; values: Record<string, any> } | null>(null)
+  const [values, setValues] = useState<Record<string, any>>({})
+  const [error, setError] = useState<string | null>(null)
+
+  const open = (id: string) => {
+    const t = getToolById(id)
+    if (!t) return
+    const initial: Record<string, any> = {}
+    t.fields?.forEach((f) => { initial[f.name] = '' })
+    setValues(initial)
+    setError(null)
+    setPending({ id, values: initial })
+  }
+
+  const confirm = async () => {
+    if (!pending) return
+    const t = getToolById(pending.id)
+    if (!t) return
+    const parsed = t.inputSchema.safeParse(values)
+    if (!parsed.success) { setError('Please provide valid inputs'); return }
+    setError(null)
+    await t.run(parsed.data)
+    setPending(null)
+  }
+
+  return (
+    <div className="flex gap-2">
+      {toolMeta.map((t) => (
+        <Button key={t.id} variant="outline" onClick={() => open(t.id)} aria-label={t.label}>{t.label}</Button>
+      ))}
+      {pending && (
+        <div role="dialog" aria-modal="true" className="fixed inset-0 bg-black/30 flex items-center justify-center p-4">
+          <div className="bg-background rounded-md border p-4 w-full max-w-sm">
+            <div className="font-medium mb-2">Confirm: {getToolById(pending.id)?.label}</div>
+            <div className="space-y-2">
+              {getToolById(pending.id)?.fields?.map((f) => (
+                <div key={f.name} className="space-y-1">
+                  <label className="text-sm" htmlFor={`field-${f.name}`}>{f.label}</label>
+                  <input
+                    id={`field-${f.name}`}
+                    type={f.type === 'number' ? 'number' : 'text'}
+                    placeholder={f.placeholder}
+                    className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+                    value={values[f.name] ?? ''}
+                    onChange={(e) => setValues((s) => ({ ...s, [f.name]: f.type === 'number' ? Number(e.target.value) : e.target.value }))}
+                  />
+                </div>
+              ))}
+              {error && <div className="text-sm text-red-600">{error}</div>}
+            </div>
+            <div className="flex justify-end gap-2 pt-3">
+              <Button variant="ghost" onClick={() => setPending(null)}>Cancel</Button>
+              <Button onClick={confirm}>Run</Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
