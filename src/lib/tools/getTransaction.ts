@@ -17,7 +17,7 @@ const tool: Tool<z.infer<typeof Input>> = {
 		return {
 			message: 'Fetched transaction',
 			cards: [
-				{ id: `tx_${hash}`, title: 'Transaction', description: res.tx ? `From ${res.tx.from} to ${res.tx.to}` : 'Not found' },
+				{ id: `tx_${hash}`, title: 'Transaction', description: res.tx ? `From ${res.tx.from} to ${res.tx.to}` : 'Not found', href: (res.tx ? (await import('@/lib/explorer')).getExplorerUrl('tx', hash) : undefined) },
 			],
 		}
 	},
