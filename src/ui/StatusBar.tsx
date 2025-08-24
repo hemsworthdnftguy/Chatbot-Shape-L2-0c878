@@ -22,7 +22,7 @@ export default function StatusBar() {
 
   useEffect(() => {
     let cancelled = false
-    ;(async () => {
+    const poll = async () => {
       try {
         const res = await shape.getHealth()
         if (!cancelled) setServerHealth(res.ok ? 'ok' : 'degraded')
@@ -35,8 +35,11 @@ export default function StatusBar() {
       } catch {
         if (!cancelled) setBlockHeight(null)
       }
-    })()
-    return () => { cancelled = true }
+    }
+    poll()
+    const interval = Number(import.meta.env.VITE_BLOCK_POLL_INTERVAL || 10000)
+    const id = setInterval(poll, Math.max(10000, Math.min(20000, interval)))
+    return () => { cancelled = true; clearInterval(id) }
   }, [setServerHealth, setBlockHeight])
 
   return (

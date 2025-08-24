@@ -3,6 +3,7 @@ import { logger } from 'hono/logger'
 import { cors } from 'hono/cors'
 import axios from 'axios'
 import { z } from 'zod'
+import { formatUnits } from './utils'
 
 const app = new Hono()
 
@@ -36,6 +37,7 @@ app.get('/api/health', (c) => c.json({ ok: true, ts: Date.now() }))
 
 // Shape RPC helpers
 const SHAPE_RPC_URL = process.env.SHAPE_RPC_URL || 'https://mainnet.shape.network'
+const BLOCK_POLL_INTERVAL = Number(process.env.BLOCK_POLL_INTERVAL || 10000)
 const hexToNumber = (hex: string): number => parseInt(hex, 16)
 
 async function rpcCall<T>(method: string, params: unknown[] = [], signal?: AbortSignal): Promise<T> {
@@ -66,7 +68,7 @@ app.get('/api/shape/blockHeight', async (c) => {
 		const bn = await rpcCall<string>('eth_blockNumber')
 		return c.json({ height: hexToNumber(bn) })
 	} catch (e) {
-		return c.json({ height: null, todo: 'Replace with Shape L2 head height endpoint if different' })
+		return c.json({ height: null, todo: true, message: 'See README Open Questions' })
 	}
 })
 
@@ -78,10 +80,10 @@ app.get('/api/shape/balance', async (c) => {
 	try {
 		const balHex = await rpcCall<string>('eth_getBalance', [parsed.data.address, 'latest'])
 		const wei = BigInt(balHex)
-		const ether = Number(wei) / 1e18
-		return c.json({ address: parsed.data.address, balanceWei: wei.toString(), balanceEther: ether })
+		const etherStr = formatUnits(wei, 18)
+		return c.json({ address: parsed.data.address, balanceWei: wei.toString(), balanceEther: Number(etherStr) })
 	} catch (e) {
-		return c.json({ address: parsed.data.address, balanceWei: '0', balanceEther: 0, todo: 'Confirm RPC endpoint' })
+		return c.json({ address: parsed.data.address, todo: true, message: 'See README Open Questions' })
 	}
 })
 
@@ -97,7 +99,7 @@ app.get('/api/shape/tx', async (c) => {
 		])
 		return c.json({ tx, receipt })
 	} catch (e) {
-		return c.json({ tx: null, receipt: null, todo: 'Confirm RPC endpoint' })
+		return c.json({ todo: true, message: 'See README Open Questions' })
 	}
 })
 
@@ -114,39 +116,34 @@ app.get('/api/shape/blocks', async (c) => {
 			const n = head - i
 			if (n < 0) break
 			const blk = await rpcCall<any>('eth_getBlockByNumber', ['0x' + n.toString(16), false])
-			blocks.push({
-				number: n,
-				hash: blk?.hash || '',
-				timestamp: blk?.timestamp ? hexToNumber(blk.timestamp) : 0,
-				txCount: Array.isArray(blk?.transactions) ? blk.transactions.length : (blk?.transactions || 0),
-			})
+			blocks.push({ number: n, hash: blk?.hash || '', timestamp: blk?.timestamp ? hexToNumber(blk.timestamp) : 0, txCount: Array.isArray(blk?.transactions) ? blk.transactions.length : (blk?.transactions || 0) })
 		}
 		return c.json({ blocks })
 	} catch (e) {
-		return c.json({ blocks: [], todo: 'Confirm RPC endpoint for listing blocks' })
+		return c.json({ blocks: [], todo: true, message: 'See README Open Questions' })
 	}
 })
 
-// NFT endpoints (stubs with TODOs)
+// NFT endpoints remain TODO with stable stubs
 const NftsCollectionsQuery = z.object({ query: z.string().trim().min(1), limit: z.coerce.number().min(1).max(50).default(10) })
 app.get('/api/shape/nfts/collections', async (c) => {
 	const parsed = NftsCollectionsQuery.safeParse({ query: c.req.query('query') || '', limit: c.req.query('limit') })
 	if (!parsed.success) return c.json({ items: [], message: 'Missing query' }, 400)
-	return c.json({ items: [], todo: 'Hook to Shape-compatible NFT collections search' })
+	return c.json({ items: [], todo: true, message: 'See README Open Questions' })
 })
 
 const NftsByOwnerQuery = z.object({ address: z.string().regex(/^0x[a-fA-F0-9]{40}$/), limit: z.coerce.number().min(1).max(50).default(10) })
 app.get('/api/shape/nfts/by-owner', async (c) => {
 	const parsed = NftsByOwnerQuery.safeParse({ address: c.req.query('address') || '', limit: c.req.query('limit') })
 	if (!parsed.success) return c.json({ items: [], message: 'Invalid address' }, 400)
-	return c.json({ address: parsed.data.address, items: [], todo: 'Hook to NFT-by-owner endpoint on Shape' })
+	return c.json({ address: parsed.data.address, items: [], todo: true, message: 'See README Open Questions' })
 })
 
 const NftsByCollectionQuery = z.object({ slug: z.string().trim().min(1), limit: z.coerce.number().min(1).max(50).default(10) })
 app.get('/api/shape/nfts/by-collection', async (c) => {
 	const parsed = NftsByCollectionQuery.safeParse({ slug: c.req.query('slug') || '', limit: c.req.query('limit') })
 	if (!parsed.success) return c.json({ items: [], message: 'Missing slug' }, 400)
-	return c.json({ slug: parsed.data.slug, items: [], todo: 'Hook to NFT-by-collection endpoint on Shape' })
+	return c.json({ slug: parsed.data.slug, items: [], todo: true, message: 'See README Open Questions' })
 })
 
 export default app
